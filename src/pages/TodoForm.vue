@@ -10,7 +10,7 @@
           style="width: 100%"
         />
         <div>
-          <q-expansion-item expand-separator icon="signal_wifi_off" label="Wifi settings">
+          <q-expansion-item expand-separator>
             <template v-slot:header>
               <header
                 class="text-primary"
