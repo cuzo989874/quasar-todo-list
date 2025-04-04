@@ -1,14 +1,14 @@
 <template>
   <q-page class="index-page">
-    <div class="todo-list q-pa-md" v-if="todos.length">
+    <div class="todo-list q-pa-md" v-if="allTodos.length">
       <q-list bordered separator>
-        <q-item v-ripple v-for="(todo, index) in todos" :key="todo.id">
+        <q-item v-ripple v-for="todo in allTodos" :key="todo.id">
           <q-item-section avatar>
             <q-checkbox v-model="todo.completed" />
           </q-item-section>
           <q-item-section>{{ todo.title }}</q-item-section>
           <q-item-section side>
-            <q-btn round dense flat icon="delete" @click="deleteTodo(index)" />
+            <q-btn round dense flat icon="delete" @click="deleteTodo(todo)" />
           </q-item-section>
         </q-item>
       </q-list>
@@ -20,11 +20,13 @@
 import { reactive } from 'vue';
 import todoForm from 'pages/TodoForm.vue';
 import type { Todo } from 'components/models';
+import { todoStore } from 'src/stores/todo-store';
 
-const todos = reactive<Todo[]>([]);
+const TodoStore = todoStore();
+const allTodos = reactive(TodoStore.$state.todoList);
 
 function addTodo(formValue: Pick<Todo, 'title' | 'description' | 'activateAt'>) {
-  todos.push({
+  TodoStore.add({
     id: Date.now(),
     title: formValue.title,
     description: formValue.description,
@@ -33,8 +35,8 @@ function addTodo(formValue: Pick<Todo, 'title' | 'description' | 'activateAt'>) 
     completed: false,
   });
 }
-function deleteTodo(index: number) {
-  todos.splice(index, 1);
+function deleteTodo(todo: Todo) {
+  TodoStore.remove(todo);
 }
 </script>
 <style lang="scss" scoped>
