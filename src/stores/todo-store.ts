@@ -24,10 +24,12 @@ export const todoStore = defineStore('todo', {
       this.todoList.splice(this.todoList.indexOf(todo), 1);
       TodoBus.emit('updatedTodoList', todo, 'remove');
     },
+    getListByDate(date: string): Array<Todo> {
+      return this.todoList.filter((todo) => todo.activateAt === date);
     },
     getListWithDate(filterCompleted = true): Record<string, Array<Todo>> {
       return this.todoList
-        .filter((todo) => filterCompleted && todo.completed)
+        .sort((a, b) => new Date(a.activateAt).valueOf() - new Date(b.activateAt).valueOf())
         .reduce(
           (acc, todo) => {
             if (!acc[todo.activateAt]) {

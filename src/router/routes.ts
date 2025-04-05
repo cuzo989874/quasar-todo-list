@@ -11,15 +11,13 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/TodoListLayout.vue'),
         children: [
           { path: 'today', component: () => import('pages/TodoToday.vue') },
+          { path: 'todos', component: () => import('pages/TodoUncompleted.vue') },
         ],
       },
     ],
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
-    path: '/:catchAll(.*)*',
+    path: '/NotFound',
     component: () => import('pages/ErrorNotFound.vue'),
   },
 ];
