@@ -1,5 +1,8 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import type { Todo } from 'src/components/models';
+
+import type { Todo } from 'components/models';
+
+import { TodoBus } from 'src/bus/todo-bus';
 
 export const todoStore = defineStore('todo', {
   state: () => ({
@@ -11,12 +14,16 @@ export const todoStore = defineStore('todo', {
     completedCount: (state) => state.todoList.filter((todo) => todo.completed).length,
     uncompletedCount: (state) => state.todoList.filter((todo) => !todo.completed).length,
   },
+
   actions: {
     add(todo: Todo) {
       this.todoList.push(todo);
+      TodoBus.emit('updatedTodoList', todo, 'new');
     },
     remove(todo: Todo) {
       this.todoList.splice(this.todoList.indexOf(todo), 1);
+      TodoBus.emit('updatedTodoList', todo, 'remove');
+    },
     },
     getListWithDate(filterCompleted = true): Record<string, Array<Todo>> {
       return this.todoList
