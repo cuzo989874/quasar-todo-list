@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { QInput } from 'quasar';
 import { todoStore } from 'src/stores/todo-store';
-import type { Todo } from 'src/components/models';
+import { formatDate } from 'src/utils/formatter';
 import { ref, useTemplateRef } from 'vue';
 
 const _title = ref('');
@@ -88,7 +88,7 @@ function submit() {
     id: Date.now(),
     title: _title.value.trim(),
     description: _description.value.trim(),
-    activateAt: _date.value,
+    activateAt: formatDate(_date.value || new Date()),
     finishedAt: '',
     completed: false,
   });
