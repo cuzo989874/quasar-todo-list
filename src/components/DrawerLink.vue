@@ -1,14 +1,6 @@
 <template>
-  <q-item
-    clickable
-    tag="a"
-    target="_blank"
-    :href="link"
-  >
-    <q-item-section
-      v-if="icon"
-      avatar
-    >
+  <q-item clickable tag="a" :target="target" :href="link">
+    <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
 
@@ -20,16 +12,19 @@
 </template>
 
 <script setup lang="ts">
-export interface EssentialLinkProps {
+export interface DrawerLinksProps {
   title: string;
   caption?: string;
   link?: string;
   icon?: string;
-};
+  target?: string;
+  external?: boolean;
+}
 
-withDefaults(defineProps<EssentialLinkProps>(), {
+withDefaults(defineProps<DrawerLinksProps>(), {
   caption: '',
   link: '#',
   icon: '',
+  target: '_self',
 });
 </script>
