@@ -4,7 +4,16 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      { path: '', redirect: '/todo/today' },
+      {
+        path: 'todo',
+        component: () => import('layouts/TodoListLayout.vue'),
+        children: [
+          { path: 'today', component: () => import('pages/TodoToday.vue') },
+        ],
+      },
+    ],
   },
 
   // Always leave this as last one,

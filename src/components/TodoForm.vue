@@ -61,6 +61,7 @@
 </template>
 <script setup lang="ts">
 import { QInput } from 'quasar';
+import { todoStore } from 'src/stores/todo-store';
 import type { Todo } from 'src/components/models';
 import { ref, useTemplateRef } from 'vue';
 
@@ -71,25 +72,25 @@ const _proxyDate = ref<Date | string>(new Date());
 
 const _titleInputComponent = useTemplateRef<QInput>('title-input');
 
-const emit = defineEmits<{
-  (e: 'submit', payload: Pick<Todo, 'title' | 'description' | 'activateAt'>): void;
-}>();
+const _TodoStore = todoStore();
 
 function reset() {
   _title.value = '';
   _description.value = '';
   _date.value = '';
-  console.log(_title.value);
 }
 
 function submit() {
   if (!_title.value) {
     throw new Error('Title empty');
   }
-  emit('submit', {
+  _TodoStore.add({
+    id: Date.now(),
     title: _title.value.trim(),
     description: _description.value.trim(),
     activateAt: _date.value,
+    finishedAt: '',
+    completed: false,
   });
   reset();
   _titleInputComponent.value?.focus();
