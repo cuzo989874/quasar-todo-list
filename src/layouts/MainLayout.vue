@@ -38,9 +38,9 @@ const linksList: DrawerLinksProps[] = [
     link: '/todo/todos',
   },
   {
-    title: 'Completed',
-    icon: 'checklist',
-    link: '/todo/completed',
+    title: 'All',
+    icon: 'list_alt',
+    link: '/todo/all',
   },
   {
     title: 'Calender',

@@ -10,6 +10,7 @@ const routes: RouteRecordRaw[] = [
         path: 'todo',
         component: () => import('layouts/TodoListLayout.vue'),
         children: [
+          { path: 'all', component: () => import('pages/TodoAll.vue') },
           { path: 'today', component: () => import('pages/TodoToday.vue') },
           { path: 'todos', component: () => import('pages/TodoUncompleted.vue') },
         ],

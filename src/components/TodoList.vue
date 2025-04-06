@@ -1,5 +1,5 @@
 <template>
-  <q-list bordered separator>
+  <q-list bordered>
     <q-item v-ripple v-for="todo in todoList" :key="todo.id">
       <q-item-section avatar>
         <q-checkbox
