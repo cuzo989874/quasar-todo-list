@@ -1,8 +1,7 @@
 <template>
-  <h5 classs="q-my-sm" style="font-size: 1em">Todo</h5>
+  <h5 class="q-mt-none q-mb-sm" style="font-size: 1em">Todo({{ uncompletedTodo.length }})</h5>
   <todo-list :todo-list="uncompletedTodo" />
-
-  <h5 classs="q-my-sm" style="font-size: 1em">Completed</h5>
+  <h5 class="q-my-sm" style="font-size: 1em">Completed({{ completedTodo.length }})</h5>
   <todo-list :todo-list="completedTodo" />
 </template>
 <script setup lang="ts">
