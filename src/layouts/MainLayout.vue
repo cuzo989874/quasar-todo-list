@@ -43,7 +43,7 @@ const linksList: DrawerLinksProps[] = [
     link: '/todo/completed',
   },
   {
-    title: 'Calander',
+    title: 'Calender',
     icon: 'calendar_month',
     link: '/calendar',
   },

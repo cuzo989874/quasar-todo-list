@@ -24,9 +24,9 @@ const completedTodo = computed(() =>
 );
 const uncompletedTodo = computed(() => todoList.value.filter((todo) => !todo.completed));
 
-TodoBus.on('updatedTodoList', () => regetTodoList());
+TodoBus.on('updatedTodoList', () => reGetTodoList());
 
-function regetTodoList() {
+function reGetTodoList() {
   todoList.value = getTodayTodoList();
 }
 
