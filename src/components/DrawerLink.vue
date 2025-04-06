@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable tag="a" :target="target" :href="link">
+  <q-item clickable tag="a" :target="target" v-bind="external ? { href: link } : { to: link }">
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
@@ -15,7 +15,7 @@
 export interface DrawerLinksProps {
   title: string;
   caption?: string;
-  link?: string;
+  link: string;
   icon?: string;
   target?: string;
   external?: boolean;

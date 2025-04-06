@@ -30,22 +30,22 @@ const linksList: DrawerLinksProps[] = [
   {
     title: 'Today',
     icon: 'today',
-    link: '/#/todo/today',
+    link: '/todo/today',
   },
   {
     title: 'Todos',
     icon: 'list',
-    link: '/#/todo/todos',
+    link: '/todo/todos',
   },
   {
     title: 'Completed',
     icon: 'checklist',
-    link: '/#/todo/completed',
+    link: '/todo/completed',
   },
   {
     title: 'Calander',
     icon: 'calendar_month',
-    link: '/#/calendar',
+    link: '/calendar',
   },
   {
     title: 'Github',
@@ -53,6 +53,7 @@ const linksList: DrawerLinksProps[] = [
     icon: 'code',
     link: 'https://github.com/cuzo989874',
     target: '_blank',
+    external: true,
   },
 ];
 
