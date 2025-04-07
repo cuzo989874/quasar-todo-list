@@ -6,6 +6,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', redirect: '/todo/today' },
+      { path: 'calendar', component: () => import('pages/TodoCalendar.vue') },
       {
         path: 'todo',
         component: () => import('layouts/TodoListLayout.vue'),
