@@ -7,43 +7,28 @@
     <q-btn icon="chevron_right" flat round @click="viewNextMonth()" />
   </header>
   <div class="q-pa-sm">
-    <div class="row">
-      <div
-        style="
-          width: calc(100% / 7);
-          height: 4ex;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-sizing: border-box;
-          border: 1px solid #ddd;
-        "
-        v-for="date of dateList"
-        :key="date"
-      >
+    <div class="calendar__row">
+      <div class="calendar__column calendar__column--header" v-for="date of dateList" :key="date">
         {{ date }}
       </div>
     </div>
-    <div
-      class="row"
-      style="border-color: #ddd; border-left: 1px; border-right: 1px"
-      v-for="(week, index) of viewDateArr"
-      :key="index"
-    >
+    <div class="calendar__row" v-for="(week, index) of viewDateArr" :key="index">
       <div
-        class="q-pa-xs"
-        :class="[
-          date.isToday
-            ? 'text-primary text-bold'
-            : date.isActivateDate
-              ? 'text-default'
-              : 'text-blue-grey-6',
-        ]"
-        style="width: calc(100% / 7); height: 60px; box-sizing: border-box; border: 1px solid #ddd"
+        class="calendar__column calendar__column--body"
         v-for="date of week"
         :key="date.dateIntlStr"
       >
-        {{ date.date }}
+        <span
+          class="calendar__date-mark"
+          :class="[
+            date.isToday
+              ? 'calendar__date-mark--today'
+              : date.isActivateDate
+                ? 'calendar__date-mark--activate'
+                : 'calendar__date-mark--in-activate',
+          ]"
+          >{{ date.date }}</span
+        >
       </div>
     </div>
   </div>
@@ -194,3 +179,54 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
   };
 }
 </script>
+<style lang="scss">
+@use 'quasar/src/css/variables' as q;
+
+.calendar {
+  &__row {
+    display: flex;
+    border-left: 1px solid;
+    border-color: q.$grey-7;
+
+    &:first-child {
+      border-top: 1px solid q.$grey-7;
+    }
+  }
+  &__column {
+    box-sizing: border-box;
+    width: calc(100% / 7);
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: q.$grey;
+
+    &--header {
+      height: 4ex;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &--body {
+      height: 60px;
+    }
+  }
+  &__date-mark {
+    display: inline-block;
+    padding: 0 calc(q.$space-base / 2) 0;
+    margin: calc(q.$space-base / 4);
+    border-radius: 50%;
+    min-height: 2em;
+    min-width: 2em;
+    text-align: center;
+    line-height: 2em;
+
+    &--today {
+      background: q.$primary;
+      color: white;
+    }
+    &--in-activate {
+      color: q.$grey-6;
+    }
+  }
+}
+</style>
