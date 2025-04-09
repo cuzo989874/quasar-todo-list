@@ -29,13 +29,19 @@
           ]"
           >{{ date.date }}</span
         >
+        <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
+          <li v-for="todo in date.todoList" :key="todo.id">{{ todo.title }}</li>
+        </ul>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { formatDate } from 'src/utils/formatter';
 import { computed, ref } from 'vue';
+
+import type { Todo } from 'components/models';
+import { todoStore } from 'stores/todo-store';
+import { formatDate } from 'src/utils/formatter';
 
 interface IDate {
   dateObj: Date;
@@ -43,8 +49,10 @@ interface IDate {
   date: number;
   isActivateDate: boolean;
   isToday: boolean;
+  todoList: Array<Todo>
 }
 
+const _todoStore = todoStore();
 const dateList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthList = [
   'January',
@@ -167,7 +175,6 @@ function _getFirstDate(target: Date) {
   return new Date(`${target.getFullYear()}-${target.getMonth() + 1}-1`);
 }
 
-// TODO: maybe load todo here
 function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
   const dateIntlStr = formatDate(date);
   return {
@@ -176,6 +183,7 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
     date: date.getDate(),
     isActivateDate,
     isToday: todayIntlStr === dateIntlStr,
+    todoList: _todoStore.getListByDate(dateIntlStr)
   };
 }
 </script>
@@ -207,7 +215,7 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
     }
 
     &--body {
-      height: 60px;
+      min-height: 60px;
     }
   }
   &__date-mark {
@@ -227,6 +235,10 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
     &--in-activate {
       color: q.$grey-6;
     }
+  }
+  &__todo-list {
+    font-size: .8em;
+    padding-left: q.$space-base * 1.5;
   }
 }
 </style>

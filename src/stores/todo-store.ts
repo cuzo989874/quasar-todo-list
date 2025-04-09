@@ -4,6 +4,20 @@ import type { Todo } from 'components/models';
 
 import { TodoBus } from 'src/bus/todo-bus';
 
+function _solveDateListWith(todoList: Array<Todo>): Record<string, Array<Todo>> {
+  return todoList
+    .sort((a, b) => new Date(a.activateAt).valueOf() - new Date(b.activateAt).valueOf())
+    .reduce(
+      (acc, todo) => {
+        if (!acc[todo.activateAt]) {
+          acc[todo.activateAt] = [];
+        }
+        acc[todo.activateAt]?.push(todo);
+        return acc;
+      },
+      {} as Record<string, Array<Todo>>,
+    );
+}
 export const todoStore = defineStore('todo', {
   state: () => ({
     todoList: [] as Array<Todo>,
@@ -27,19 +41,8 @@ export const todoStore = defineStore('todo', {
     getListByDate(date: string): Array<Todo> {
       return this.todoList.filter((todo) => todo.activateAt === date);
     },
-    getListWithDate(filterCompleted = true): Record<string, Array<Todo>> {
-      return this.todoList
-        .sort((a, b) => new Date(a.activateAt).valueOf() - new Date(b.activateAt).valueOf())
-        .reduce(
-          (acc, todo) => {
-            if (!acc[todo.activateAt]) {
-              acc[todo.activateAt] = [];
-            }
-            acc[todo.activateAt]?.push(todo);
-            return acc;
-          },
-          {} as Record<string, Array<Todo>>,
-        );
+    getListWithDate(): Record<string, Array<Todo>> {
+      return _solveDateListWith(this.todoList);
     },
   },
 });
