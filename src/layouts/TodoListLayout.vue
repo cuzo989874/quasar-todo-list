@@ -15,7 +15,9 @@ import { todoStore } from 'stores/todo-store';
 const _TodoStore = todoStore();
 const allTodos = reactive(_TodoStore.$state.todoList);
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+@use "quasar/src/css/variables" as q;
+
 .index-page {
   display: flex;
   flex-direction: column;
@@ -25,5 +27,6 @@ const allTodos = reactive(_TodoStore.$state.todoList);
 .todo-list-container {
   flex-grow: 1;
   overflow: auto;
+  border-bottom: 1px solid q.$grey-4;
 }
 </style>

@@ -1,10 +1,15 @@
 <template>
-  <ul>
-    <li v-for="[date, todoList] in todoListWithDate" :key="date">
-      <h5 class="q-my-sm" style="font-size: 1em">{{ displayDate(date) }}</h5>
+  <q-list separator>
+    <q-expansion-item
+      expand-separator
+      :label="`${displayDate(date)} (${todoList.length})`"
+      v-for="([date, todoList]) in todoListWithDateEntries"
+      :key="date"
+      default-opened
+    >
       <todo-list :todo-list="todoList" />
-    </li>
-  </ul>
+    </q-expansion-item>
+  </q-list>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
@@ -17,7 +22,7 @@ import { TodoBus } from 'src/bus/todo-bus';
 import { formatDate } from 'src/utils/formatter';
 
 const TodoStore = todoStore();
-const todoListWithDate = ref(Object.entries(TodoStore.getListWithDate()));
+const todoListWithDateEntries = ref(Object.entries(TodoStore.getListWithDate()));
 
 let todayStr: string;
 let yesterdayStr: string;
@@ -25,7 +30,7 @@ let tomorrowStr: string;
 _resetDate();
 
 TodoBus.on('updatedTodoList', (todo, type) => {
-  const listWithDateEntry = todoListWithDate.value;
+  const listWithDateEntry = todoListWithDateEntries.value;
   let todoList: [string, Array<Todo>] | undefined;
   switch (type) {
     case 'new':
