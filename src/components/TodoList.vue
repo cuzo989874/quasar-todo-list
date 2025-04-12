@@ -47,6 +47,7 @@ const TodoStore = todoStore();
 function _onTodoCompletedChange(todo: Todo, completed: boolean) {
   todo.completed = completed;
   todo.finishedAt = completed ? formatDatTime(new Date()) : '';
+  TodoStore.saveTodoList();
 }
 
 function deleteTodo(todo: Todo) {
