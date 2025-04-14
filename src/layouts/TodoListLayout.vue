@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 
-import todoForm from 'components/TodoForm.vue';
+import todoForm from 'components/features/TodoForm.vue';
 import { todoStore } from 'stores/todo-store';
 
 const _TodoStore = todoStore();

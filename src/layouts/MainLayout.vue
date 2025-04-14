@@ -24,7 +24,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import DrawerLink, { type DrawerLinksProps } from 'components/DrawerLink.vue';
+
+import DrawerLink, { type DrawerLinksProps } from 'components/features/DrawerLink.vue';
 
 const linksList: DrawerLinksProps[] = [
   {

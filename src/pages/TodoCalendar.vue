@@ -37,6 +37,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+// TODO: Calendar Date detail
 import { computed, ref } from 'vue';
 
 import type { Todo } from 'components/models';

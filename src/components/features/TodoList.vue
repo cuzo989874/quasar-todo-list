@@ -31,6 +31,7 @@
   </q-list>
 </template>
 <script setup lang="ts">
+// TODO: Edit Todo
 import { todoStore } from 'src/stores/todo-store';
 import { formatDatTime } from 'src/utils/formatter';
 import type { Todo } from './models';
@@ -58,6 +59,6 @@ function deleteTodo(todo: Todo) {
 .todo__footer {
   display: flex;
   justify-content: flex-end;
-  gap: 8px
+  gap: 8px;
 }
 </style>

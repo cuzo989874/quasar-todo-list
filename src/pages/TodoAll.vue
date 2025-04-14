@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import TodoList from 'components/TodoList.vue';
+import TodoList from 'components/features/TodoList.vue';
 
 import { todoStore } from 'stores/todo-store';
 import { TodoBus } from 'src/bus/todo-bus';
