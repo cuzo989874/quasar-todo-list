@@ -23,7 +23,7 @@
           <p>{{ todo.description }}</p>
         </div>
         <footer class="todo__footer q-pa-sm text-grey">
-          <q-btn icon="edit" flat dense round />
+          <q-btn icon="edit" flat dense round @click="editTodo(todo)" />
           <q-btn icon="delete" flat dense round @click="deleteTodo(todo)" />
         </footer>
       </template>
@@ -31,10 +31,12 @@
   </q-list>
 </template>
 <script setup lang="ts">
-// TODO: Edit Todo
+import { Dialog } from 'quasar';
+
 import { todoStore } from 'src/stores/todo-store';
 import { formatDatTime } from 'src/utils/formatter';
-import type { Todo } from './models';
+import type { Todo } from '../models';
+import EditTodoDialog from './EditTodoDialog.vue';
 
 defineProps({
   todoList: {
@@ -49,6 +51,18 @@ function _onTodoCompletedChange(todo: Todo, completed: boolean) {
   todo.completed = completed;
   todo.finishedAt = completed ? formatDatTime(new Date()) : '';
   TodoStore.saveTodoList();
+}
+
+function editTodo(todo: Todo) {
+  const dialog = Dialog.create({
+    component: EditTodoDialog,
+    componentProps: todo,
+    persistent: true
+  }).onOk((newTodo) => {
+    todo = newTodo;
+    TodoStore.saveTodoList();
+    dialog.hide();
+  });
 }
 
 function deleteTodo(todo: Todo) {
