@@ -30,7 +30,9 @@
           >{{ date.date }}</span
         >
         <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
-          <li v-for="todo in date.todoList" :key="todo.id">{{ todo.title }}</li>
+          <li v-for="todo in date.todoList" :key="todo.id">
+            <span>{{ todo.title }}</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -221,7 +223,6 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
   }
   &__date-mark {
     display: inline-block;
-    padding: 0 calc(q.$space-base / 2) 0;
     margin: calc(q.$space-base / 4);
     border-radius: 50%;
     min-height: 2em;
@@ -232,6 +233,7 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
     &--today {
       background: q.$primary;
       color: white;
+      font-weight: 600;
     }
     &--in-activate {
       color: q.$grey-6;
@@ -240,6 +242,13 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
   &__todo-list {
     font-size: .8em;
     padding-left: q.$space-base * 1.5;
+    margin-top: calc(q.$space-base / 4);
+
+    & > li > span {
+      overflow:hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 }
 </style>
