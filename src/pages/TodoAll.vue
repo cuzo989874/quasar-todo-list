@@ -20,8 +20,8 @@ import { todoStore } from 'stores/todo-store';
 import { TodoBus } from 'src/bus/todo-bus';
 import { formatDate } from 'src/utils/formatter';
 
-const TodoStore = todoStore();
-const todoListWithDate = ref(TodoStore.getListWithDate());
+const _todoStore = todoStore();
+const todoListWithDate = ref(_todoStore.getListWithDate());
 
 let todayStr: string;
 let yesterdayStr: string;
@@ -31,7 +31,7 @@ _resetDate();
 TodoBus.on('updatedTodoList', () => reGetTodoList());
 
 function reGetTodoList() {
-  todoListWithDate.value = TodoStore.getListWithDate();
+  todoListWithDate.value = _todoStore.getListWithDate();
 }
 
 function displayDate(date: string) {

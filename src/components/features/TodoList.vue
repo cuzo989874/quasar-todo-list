@@ -45,12 +45,12 @@ defineProps({
   },
 });
 
-const TodoStore = todoStore();
+const _todoStore = todoStore();
 
 function _onTodoCompletedChange(todo: Todo, completed: boolean) {
   todo.completed = completed;
   todo.finishedAt = completed ? formatDatTime(new Date()) : '';
-  TodoStore.saveTodoList();
+  _todoStore.saveTodoList();
 }
 
 function editTodo(todo: Todo) {
@@ -60,13 +60,13 @@ function editTodo(todo: Todo) {
     persistent: true
   }).onOk((newTodo) => {
     todo = newTodo;
-    TodoStore.saveTodoList();
+    _todoStore.saveTodoList();
     dialog.hide();
   });
 }
 
 function deleteTodo(todo: Todo) {
-  TodoStore.remove(todo);
+  _todoStore.remove(todo);
 }
 </script>
 <style lang="scss">

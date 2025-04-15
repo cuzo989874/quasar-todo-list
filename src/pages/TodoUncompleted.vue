@@ -21,8 +21,8 @@ import { todoStore } from 'stores/todo-store';
 import { TodoBus } from 'src/bus/todo-bus';
 import { formatDate } from 'src/utils/formatter';
 
-const TodoStore = todoStore();
-const todoListWithDateEntries = ref(Object.entries(TodoStore.getListWithDate(true)));
+const _todoStore = todoStore();
+const todoListWithDateEntries = ref(Object.entries(_todoStore.getListWithDate(true)));
 
 let todayStr: string;
 let yesterdayStr: string;
