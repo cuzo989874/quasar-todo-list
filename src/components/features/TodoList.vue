@@ -59,7 +59,9 @@ function editTodo(todo: Todo) {
     componentProps: todo,
     persistent: true
   }).onOk((newTodo) => {
-    todo = newTodo;
+    todo.title = newTodo.title;
+    todo.description = newTodo.description;
+    todo.activateAt = newTodo.activateAt;
     _todoStore.saveTodoList();
     dialog.hide();
   });
