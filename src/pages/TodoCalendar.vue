@@ -30,9 +30,7 @@
           >{{ date.date }}</span
         >
         <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
-          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click="openTodoPopUp($event, todo)">
-            <span>{{ todo.title }}</span>
-          </li>
+          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click="openTodoPopUp($event, todo)">{{ todo.title }}</li>
         </ul>
         <div class="text-right text-grey-6 q-px-sm q-pb-xs" v-if="date.completedTodoList.length">
           <q-icon name="task_alt" />
@@ -46,7 +44,7 @@
           <h4>{{ _activatePopUpTodo.title }}</h4>
           <p class="text-grey-4 q-mb-sm">{{ _activatePopUpTodo.activateAt }}</p>
         </div>
-        <p class="q-px-sm" v-if="_activatePopUpTodo.description">{{ _activatePopUpTodo.description }}</p>
+        <p class="q-px-sm q-my-sm" v-if="_activatePopUpTodo.description">{{ _activatePopUpTodo.description }}</p>
         <footer class="todo-popup__footer">
           <q-btn icon="edit" flat dense round @click="editTodo(_activatePopUpTodo)" />
           <q-btn icon="delete" flat dense round @click="deleteTodo(_activatePopUpTodo)" />
@@ -316,6 +314,9 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
       margin: 0 2px;
       border-radius: 2px;
       transition: background .2s ease;
+      overflow:hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
 
       &::before {
         content: '';
@@ -329,12 +330,6 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
 
       &:hover {
         background: q.$blue-5;
-      }
-
-      & > span {
-        overflow:hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
     }
   }
