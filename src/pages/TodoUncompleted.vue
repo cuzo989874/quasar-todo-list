@@ -22,7 +22,7 @@ import { TodoBus } from 'src/bus/todo-bus';
 import { formatDate } from 'src/utils/formatter';
 
 const TodoStore = todoStore();
-const todoListWithDateEntries = ref(Object.entries(TodoStore.getListWithDate()));
+const todoListWithDateEntries = ref(Object.entries(TodoStore.getListWithDate(true)));
 
 let todayStr: string;
 let yesterdayStr: string;

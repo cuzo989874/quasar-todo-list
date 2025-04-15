@@ -27,11 +27,17 @@ function _getLocalStorageTodoList(): Array<Todo> {
   return temp.data;
 }
 
-function _solveDateListWith(todoList: Array<Todo>): Record<string, Array<Todo>> {
+function _solveDateListWith(
+  todoList: Array<Todo>,
+  filterCompleted = false,
+): Record<string, Array<Todo>> {
   return todoList
     .sort((a, b) => new Date(a.activateAt).valueOf() - new Date(b.activateAt).valueOf())
     .reduce(
       (acc, todo) => {
+        if (filterCompleted && todo.completed) {
+          return acc;
+        }
         if (!acc[todo.activateAt]) {
           acc[todo.activateAt] = [];
         }
@@ -77,8 +83,8 @@ export const todoStore = defineStore('todo', {
     //     this.todoList.filter((todo) => todo.activateAt.includes(monthAndYear)),
     //   );
     // },
-    getListWithDate(): Record<string, Array<Todo>> {
-      return _solveDateListWith(this.todoList);
+    getListWithDate(filterCompleted = false): Record<string, Array<Todo>> {
+      return _solveDateListWith(this.todoList, filterCompleted);
     },
 
     saveTodoList() {
