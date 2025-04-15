@@ -8,7 +8,7 @@ export function formatDate(date: number | string | Date): string {
     month: '2-digit',
     day: '2-digit',
   };
-  return dateObj.toLocaleDateString('en-US', options).replace(/\//g, '-');
+  return dateObj.toLocaleDateString('zh-tw', options).replace(/\//g, '-');
 }
 
 export function formatDatTime(date: number | string | Date): string {
@@ -24,5 +24,5 @@ export function formatDatTime(date: number | string | Date): string {
     minute: '2-digit',
     hourCycle: 'h24',
   };
-  return dateObj.toLocaleString('en-US', options).replace(/\//g, '-').replace(',', '');
+  return dateObj.toLocaleString('zh-tw', options).replace(/\//g, '-').replace(',', '');
 }
