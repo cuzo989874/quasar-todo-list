@@ -30,19 +30,37 @@
           >{{ date.date }}</span
         >
         <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
-          <li v-for="todo in date.todoList" :key="todo.id">
+          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click="openTodoPopUp($event, todo)">
             <span>{{ todo.title }}</span>
           </li>
         </ul>
+        <div class="text-right text-grey-6 q-px-sm q-pb-xs" v-if="date.completedTodoList.length">
+          <q-icon name="task_alt" />
+          {{ date.completedTodoList.length }}
+        </div>
       </div>
     </div>
+    <q-popup-proxy ref="TodoPopUpRef" :target="_todoPopUpTarget" transition-show="scale" transition-hide="scale" no-parent-event>
+      <div class="todo-popup" v-if="_activatePopUpTodo">
+        <div class="todo-popup__header">
+          <h4>{{ _activatePopUpTodo.title }}</h4>
+          <p class="text-grey-4 q-mb-sm">{{ _activatePopUpTodo.activateAt }}</p>
+        </div>
+        <p class="q-px-sm" v-if="_activatePopUpTodo.description">{{ _activatePopUpTodo.description }}</p>
+        <footer class="todo-popup__footer">
+          <q-btn icon="edit" flat dense round @click="editTodo(_activatePopUpTodo)" />
+          <q-btn icon="delete" flat dense round @click="deleteTodo(_activatePopUpTodo)" />
+        </footer>
+      </div>
+    </q-popup-proxy>
   </div>
 </template>
 <script lang="ts" setup>
-// TODO: Calendar Date detail
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
+import { Dialog, QPopupProxy } from 'quasar';
 
 import type { Todo } from 'components/models';
+import EditTodoDialog from 'components/features/EditTodoDialog.vue';
 import { todoStore } from 'stores/todo-store';
 import { formatDate } from 'src/utils/formatter';
 
@@ -52,11 +70,11 @@ interface IDate {
   date: number;
   isActivateDate: boolean;
   isToday: boolean;
-  todoList: Array<Todo>
+  todoList: Array<Todo>;
+  completedTodoList: Array<Todo>;
+  uncompletedTodoList: Array<Todo>;
 }
-
-const _todoStore = todoStore();
-const dateList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const dateList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 const monthList = [
   'January',
   'February',
@@ -70,9 +88,16 @@ const monthList = [
   'October',
   'November',
   'December',
-];
+] as const;
 const viewMonthFirstDate = ref(_getFirstDate(new Date()));
-let todayIntlStr = formatDate(new Date());
+
+const _todoStore = todoStore();
+let _todayIntlStr = formatDate(new Date());
+
+//
+const _TodoPopUpRef = useTemplateRef<QPopupProxy>('TodoPopUpRef');
+const _todoPopUpTarget = ref<HTMLElement | undefined>(undefined);
+const _activatePopUpTodo = ref<Todo | null>(null);
 
 const viewDateArr = computed(() => {
   const previousMonthLastDate = new Date(viewMonthFirstDate.value.valueOf() - 24 * 60 * 60 * 1000);
@@ -150,6 +175,12 @@ const viewDateArr = computed(() => {
   );
 });
 
+function openTodoPopUp(evt: MouseEvent, todo: Todo) {
+  _todoPopUpTarget.value = evt.currentTarget as HTMLElement;
+  _activatePopUpTodo.value = todo;
+  _TodoPopUpRef.value?.show(evt);
+}
+
 function viewNextMonth() {
   _refreshConstant();
   const currentDate = viewMonthFirstDate.value;
@@ -170,8 +201,24 @@ function viewPreviousMonth() {
   );
 }
 
+function editTodo(todo: Todo) {
+  const dialog = Dialog.create({
+    component: EditTodoDialog,
+    componentProps: todo,
+    persistent: true
+  }).onOk((newTodo) => {
+    todo = newTodo;
+    _todoStore.saveTodoList();
+    dialog.hide();
+  });
+}
+
+function deleteTodo(todo: Todo) {
+  _todoStore.remove(todo);
+}
+
 function _refreshConstant() {
-  todayIntlStr = formatDate(new Date());
+  _todayIntlStr = formatDate(new Date());
 }
 
 function _getFirstDate(target: Date) {
@@ -180,13 +227,28 @@ function _getFirstDate(target: Date) {
 
 function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
   const dateIntlStr = formatDate(date);
+  const todoList = _todoStore.getListByDate(dateIntlStr);
+  const { uncompletedTodoList, completedTodoList } = todoList.reduce(
+    (acc, cur) => {
+      if (cur.completed) {
+        acc.completedTodoList.push(cur);
+      } else {
+        acc.uncompletedTodoList.push(cur);
+      }
+      return acc;
+    },
+    {uncompletedTodoList: [] as Todo[], completedTodoList:[] as Todo[]},
+  );
+
   return {
     dateObj: date,
     dateIntlStr: formatDate(date),
     date: date.getDate(),
     isActivateDate,
-    isToday: todayIntlStr === dateIntlStr,
-    todoList: _todoStore.getListByDate(dateIntlStr)
+    isToday: _todayIntlStr === dateIntlStr,
+    todoList,
+    uncompletedTodoList,
+    completedTodoList
   };
 }
 </script>
@@ -241,14 +303,63 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
   }
   &__todo-list {
     font-size: .8em;
-    padding-left: q.$space-base * 1.5;
+    list-style: none;
+    padding-left: 0;
     margin-top: calc(q.$space-base / 4);
+    margin-bottom: calc(q.$space-base / 2);
 
-    & > li > span {
-      overflow:hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+    & > li {
+      cursor: pointer;
+      padding: 2px;
+      margin: 0 2px;
+      border-radius: 2px;
+      transition: background .2s ease;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 0.5em;
+        height: 0.5em;
+        border-radius: 50%;
+        margin: 0 calc(q.$space-base / 2) 0 calc(q.$space-base / 4);
+        background: q.$primary;
+      }
+
+      &:hover {
+        background: q.$blue-5;
+      }
+
+      & > span {
+        overflow:hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
     }
+  }
+}
+.todo-popup {
+  min-width: 300px;
+  max-width: min(95vw, 400px);
+
+  &__header {
+    padding: calc(q.$space-base / 2);
+    color: white;
+    background-color: q.$primary;
+
+    & > h4 {
+      font-size: 1.2em;
+      line-height: 1.414;
+      margin: 0;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: calc(q.$space-base / 4);
+    gap: calc(q.$space-base / 2);
+    color: q.$grey;
   }
 }
 </style>
