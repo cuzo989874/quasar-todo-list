@@ -9,16 +9,17 @@
           autofocus
           :rules="[val => !!val || 'Title is required']"
         />
-        <q-input
-          class="q-mb-md"
-          v-model="_description"
-          label="Description"
-          outlined
-          autofocus
-        />
         <date-picker-input
+          class="q-mb-md"
           v-model="_activateAt"
           label="Activate Date"
+          :rules="[val => !!val || 'Activate Date is required']"
+        />
+        <q-input
+          v-model="_description"
+          label="Description(Optional)"
+          outlined
+          autofocus
         />
       </q-card-section>
 

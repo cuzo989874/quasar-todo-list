@@ -15,7 +15,7 @@
     </q-input>
 </template>
 <script lang="ts" setup>
-import { QPopupProxy } from 'quasar';
+import { QPopupProxy, type ValidationRule } from 'quasar';
 import { formatDate } from 'src/utils/formatter';
 import { watch, useTemplateRef, ref } from 'vue';
 
@@ -27,7 +27,7 @@ const _model = defineModel({
 });
 const _proxyDate = ref(_model.value);
 
-const props = defineProps<{ label: string, }>();
+const props = defineProps<{ label: string, rules?: Array<ValidationRule> | undefined }>();
 const PopupProxy = useTemplateRef<QPopupProxy>('PopupProxy');
 let _proxyModelChangeDebounce: NodeJS.Timeout | null = null;
 

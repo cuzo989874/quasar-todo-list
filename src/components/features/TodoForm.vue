@@ -21,13 +21,13 @@
               </header>
             </template>
             <div class="column q-pa-md" style="gap: 8px">
-              <q-input v-model="_description" label="description" outlined />
               <div class="row">
                 <date-picker-input
                   v-model="_activateAt"
                   label="Activate Date"
                 />
               </div>
+              <q-input v-model="_description" label="Description(Optional)" outlined />
             </div>
           </q-expansion-item>
         </div>
