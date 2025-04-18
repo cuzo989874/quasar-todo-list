@@ -33,7 +33,7 @@
         <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
           <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click.stop="_TodoDetailPopupRef?.open($event, todo)">{{ todo.title }}</li>
         </ul>
-        <div class="text-right text-grey-6 q-px-sm q-pb-xs" v-if="date.completedTodoList.length">
+        <div class="text-right text-grey-6 q-px-sm q-pb-xs q-mt-auto" v-if="date.completedTodoList.length">
           <q-icon name="task_alt" />
           {{ date.completedTodoList.length }}
         </div>
@@ -48,7 +48,7 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { Dialog } from 'quasar';
 
 import type { Todo } from 'components/models';
-import EditTodoDialog from 'components/features/EditTodoDialog.vue';
+import CreateTodoDialog from 'components/features/CreateTodoDialog.vue';
 import TodoDetailPopup from 'components/features/TodoDetailPopup.vue';
 import { todoStore } from 'stores/todo-store';
 import { formatDate } from 'src/utils/formatter';
@@ -181,22 +181,22 @@ function viewPreviousMonth() {
   );
 }
 
-function editTodo(todo: Todo) {
+function openCreateTodoDialog(triggerDate: string) {
   const dialog = Dialog.create({
-    component: EditTodoDialog,
-    componentProps: todo,
+    component: CreateTodoDialog,
+    componentProps: { triggerDate },
     persistent: true
-  }).onOk((newTodo) => {
-    todo.title = newTodo.title;
-    todo.description = newTodo.description;
-    todo.activateAt = newTodo.activateAt;
-    _todoStore.saveTodoList();
+  }).onOk((content) => {
+    _todoStore.add({
+      id: Date.now(),
+      title: content.title,
+      description: content.description,
+      activateAt: content.activateAt,
+      finishedAt: '',
+      completed: false,
+    });
     dialog.hide();
   });
-}
-
-function deleteTodo(todo: Todo) {
-  _todoStore.remove(todo);
 }
 
 function _refreshConstant() {
@@ -262,17 +262,25 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
     }
 
     &--body {
+      display: flex;
+      flex-direction: column;
       min-height: 60px;
+
+      &:hover {
+        background: q.$blue-1;
+        cursor: pointer;
+      }
     }
   }
   &__date-mark {
     display: inline-block;
-    margin: calc(q.$space-base / 4);
-    border-radius: 50%;
     min-height: 2em;
     min-width: 2em;
-    text-align: center;
     line-height: 2em;
+    text-align: center;
+    border-radius: 50%;
+    margin: calc(q.$space-base / 4) auto calc(q.$space-base / 4) calc(q.$space-base / 4);
+    cursor: default;
 
     &--today {
       background: q.$primary;

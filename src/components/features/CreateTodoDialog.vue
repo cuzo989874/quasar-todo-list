@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef">
     <q-card style="min-width: min(95vw, 400px)">
       <q-card-section class="row q-pb-none text-h6">
-        Edit Todo
+        Create Todo
       </q-card-section>
       <q-card-section class="column">
         <q-input
@@ -28,7 +28,7 @@
 
       <q-card-actions align="right">
         <q-btn label="Cancel" color="primary" flat v-close-popup />
-        <q-btn icon="save" label="Save" color="primary" @click="save()" />
+        <q-btn icon="add" label="Create" color="primary" @click="save()" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -38,7 +38,6 @@ import { ref } from 'vue';
 import { useDialogPluginComponent } from 'quasar'
 
 import DatePickerInput from '../DatePickerInput.vue';
-import type { Todo } from '../models';
 
 const emits = defineEmits([
   // REQUIRED; need to specify some events that your
@@ -46,15 +45,14 @@ const emits = defineEmits([
   ...useDialogPluginComponent.emits
 ]);
 
-const props = defineProps<Todo>();
+const props = defineProps<{ triggerDate: string }>();
 
-const _title = ref(props.title);
-const _description = ref(props.description);
-const _activateAt = ref(props.activateAt);
+const _title = ref('');
+const _description = ref('');
+const _activateAt = ref(props.triggerDate);
 
 function save() {
   emits('ok', {
-    ...props,
     title: _title.value,
     description: _description.value,
     activateAt: _activateAt.value,
