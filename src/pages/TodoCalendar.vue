@@ -17,6 +17,7 @@
         class="calendar__column calendar__column--body"
         v-for="date of week"
         :key="date.dateIntlStr"
+        @click="openCreateTodoDialog(date.dateIntlStr)"
       >
         <span
           class="calendar__date-mark"
@@ -30,7 +31,7 @@
           >{{ date.date }}</span
         >
         <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
-          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click="openTodoPopUp($event, todo)">{{ todo.title }}</li>
+          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click.stop="_TodoDetailPopupRef?.open($event, todo)">{{ todo.title }}</li>
         </ul>
         <div class="text-right text-grey-6 q-px-sm q-pb-xs" v-if="date.completedTodoList.length">
           <q-icon name="task_alt" />
@@ -38,27 +39,17 @@
         </div>
       </div>
     </div>
-    <q-popup-proxy ref="TodoPopUpRef" :target="_todoPopUpTarget" transition-show="scale" transition-hide="scale" no-parent-event>
-      <div class="todo-popup" v-if="_activatePopUpTodo">
-        <div class="todo-popup__header">
-          <h4>{{ _activatePopUpTodo.title }}</h4>
-          <p class="text-grey-4 q-mb-sm">{{ _activatePopUpTodo.activateAt }}</p>
-        </div>
-        <p class="q-px-sm q-my-sm" v-if="_activatePopUpTodo.description">{{ _activatePopUpTodo.description }}</p>
-        <footer class="todo-popup__footer">
-          <q-btn icon="edit" flat dense round @click="editTodo(_activatePopUpTodo)" />
-          <q-btn icon="delete" flat dense round @click="deleteTodo(_activatePopUpTodo)" />
-        </footer>
-      </div>
-    </q-popup-proxy>
+    <todo-detail-popup ref="todoDetailPopup" />
   </div>
 </template>
 <script lang="ts" setup>
+import type { ComponentPublicInstance} from 'vue';
 import { computed, ref, useTemplateRef } from 'vue';
-import { Dialog, QPopupProxy } from 'quasar';
+import { Dialog } from 'quasar';
 
 import type { Todo } from 'components/models';
 import EditTodoDialog from 'components/features/EditTodoDialog.vue';
+import TodoDetailPopup from 'components/features/TodoDetailPopup.vue';
 import { todoStore } from 'stores/todo-store';
 import { formatDate } from 'src/utils/formatter';
 
@@ -92,10 +83,7 @@ const viewMonthFirstDate = ref(_getFirstDate(new Date()));
 const _todoStore = todoStore();
 let _todayIntlStr = formatDate(new Date());
 
-//
-const _TodoPopUpRef = useTemplateRef<QPopupProxy>('TodoPopUpRef');
-const _todoPopUpTarget = ref<HTMLElement | undefined>(undefined);
-const _activatePopUpTodo = ref<Todo | null>(null);
+const _TodoDetailPopupRef = useTemplateRef<ComponentPublicInstance<typeof TodoDetailPopup>>('todoDetailPopup');
 
 const viewDateArr = computed(() => {
   const previousMonthLastDate = new Date(viewMonthFirstDate.value.valueOf() - 24 * 60 * 60 * 1000);
@@ -172,12 +160,6 @@ const viewDateArr = computed(() => {
     [] as Array<Array<IDate>>,
   );
 });
-
-function openTodoPopUp(evt: MouseEvent, todo: Todo) {
-  _todoPopUpTarget.value = evt.currentTarget as HTMLElement;
-  _activatePopUpTodo.value = todo;
-  _TodoPopUpRef.value?.show(evt);
-}
 
 function viewNextMonth() {
   _refreshConstant();
@@ -332,31 +314,6 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
         background: q.$blue-5;
       }
     }
-  }
-}
-.todo-popup {
-  min-width: 300px;
-  max-width: min(95vw, 400px);
-
-  &__header {
-    padding: calc(q.$space-base / 2);
-    color: white;
-    background-color: q.$primary;
-
-    & > h4 {
-      font-size: 1.2em;
-      line-height: 1.414;
-      margin: 0;
-    }
-  }
-
-  &__footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: calc(q.$space-base / 4);
-    gap: calc(q.$space-base / 2);
-    color: q.$grey;
   }
 }
 </style>
