@@ -7,6 +7,8 @@
       </div>
       <p class="q-px-sm q-my-sm" v-if="_activatePopUpTodo.description">{{ _activatePopUpTodo.description }}</p>
       <footer class="todo-popup__footer">
+        <q-btn icon="rotate_left" flat dense round @click="_changeTodoStatus(_activatePopUpTodo, false)"  v-if="_activatePopUpTodo.completed" />
+        <q-btn icon="check" flat dense round @click="_changeTodoStatus(_activatePopUpTodo, true)" v-else />
         <q-btn icon="edit" flat dense round @click="_openEditTodoDialog(_activatePopUpTodo)" />
         <q-btn icon="delete" flat dense round @click="deleteTodo(_activatePopUpTodo)" />
       </footer>
@@ -20,6 +22,7 @@ import { Dialog, QPopupProxy } from 'quasar';
 import type { Todo } from '../models';
 import { todoStore } from 'stores/todo-store';
 import EditTodoDialog from 'components/features/EditTodoDialog.vue';
+import { formatDatTime } from 'src/utils/formatter';
 
 const _todoStore = todoStore();
 const _TodoPopUpRef = useTemplateRef<QPopupProxy>('TodoPopUpRef');
@@ -31,6 +34,12 @@ function open(evt: Event, todo: Todo) {
   _todoPopUpTarget.value = evt.currentTarget as HTMLElement;
   _activatePopUpTodo.value = todo;
   _TodoPopUpRef.value?.show(evt);
+}
+
+function _changeTodoStatus(todo: Todo, completed: boolean) {
+  todo.completed = completed;
+  todo.finishedAt = completed ? formatDatTime(new Date()) : '';
+  _todoStore.saveTodoList();
 }
 
 function deleteTodo(todo: Todo) {
