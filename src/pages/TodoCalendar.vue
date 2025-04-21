@@ -31,7 +31,7 @@
           >{{ date.date }}</span
         >
         <ul class="calendar__todo-list" v-if="date.todoList.length > 0">
-          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click.stop="_TodoDetailPopupRef?.open($event, todo)">{{ todo.title }}</li>
+          <li v-for="todo in date.uncompletedTodoList" :key="todo.id" @click.stop="TodoDetailPopupRef?.open($event, todo)">{{ todo.title }}</li>
         </ul>
         <div class="text-right text-grey-6 q-px-sm q-pb-xs q-mt-auto" v-if="date.completedTodoList.length">
           <q-icon name="task_alt" />
@@ -78,12 +78,12 @@ const monthList = [
   'November',
   'December',
 ] as const;
-const viewMonthFirstDate = ref(_getFirstDate(new Date()));
+const viewMonthFirstDate = ref(getFirstDate(new Date()));
 
-const _todoStore = todoStore();
-let _todayIntlStr = formatDate(new Date());
+const TodoStore = todoStore();
+let todayIntlStr = formatDate(new Date());
 
-const _TodoDetailPopupRef = useTemplateRef<ComponentPublicInstance<typeof TodoDetailPopup>>('todoDetailPopup');
+const TodoDetailPopupRef = useTemplateRef<ComponentPublicInstance<typeof TodoDetailPopup>>('todoDetailPopup');
 
 const viewDateArr = computed(() => {
   const previousMonthLastDate = new Date(viewMonthFirstDate.value.valueOf() - 24 * 60 * 60 * 1000);
@@ -99,7 +99,7 @@ const viewDateArr = computed(() => {
   for (let i = 1; i <= 7; i++) {
     if (i <= firstDay) {
       allDateList.push(
-        _dateConstructor(
+        dateConstructor(
           new Date(
             `${previousMonthLastDate.getFullYear()}-${previousMonthLastDate.getMonth() + 1}-${previousMonthLastDate.getDate() - firstDay + i}`,
           ),
@@ -108,7 +108,7 @@ const viewDateArr = computed(() => {
       );
     } else {
       allDateList.push(
-        _dateConstructor(
+        dateConstructor(
           new Date(
             `${viewMonthFirstDate.value.getFullYear()}-${viewMonthFirstDate.value.getMonth() + 1}-${i - firstDay}`,
           ),
@@ -125,7 +125,7 @@ const viewDateArr = computed(() => {
   // because first day start with 0
   for (let i = 7 - firstDay + 1; i <= monthLength; i++) {
     allDateList.push(
-      _dateConstructor(
+      dateConstructor(
         new Date(
           `${viewMonthFirstDate.value.getFullYear()}-${viewMonthFirstDate.value.getMonth() + 1}-${i}`,
         ),
@@ -138,7 +138,7 @@ const viewDateArr = computed(() => {
   let nextMonthIndex = 0;
   while (allDateList.length % 7 > 0) {
     allDateList.push(
-      _dateConstructor(
+      dateConstructor(
         new Date(
           `${nextMonthFirstDate.getFullYear()}-${nextMonthFirstDate.getMonth() + 1}-${++nextMonthIndex}`,
         ),
@@ -162,7 +162,7 @@ const viewDateArr = computed(() => {
 });
 
 function viewNextMonth() {
-  _refreshConstant();
+  refreshConstant();
   const currentDate = viewMonthFirstDate.value;
   viewMonthFirstDate.value = new Date(
     currentDate.getMonth() === 11
@@ -172,7 +172,7 @@ function viewNextMonth() {
 }
 
 function viewPreviousMonth() {
-  _refreshConstant();
+  refreshConstant();
   const currentDate = viewMonthFirstDate.value;
   viewMonthFirstDate.value = new Date(
     currentDate.getMonth() === 0
@@ -187,7 +187,7 @@ function openCreateTodoDialog(triggerDate: string) {
     componentProps: { triggerDate },
     persistent: true
   }).onOk((content) => {
-    _todoStore.add({
+    TodoStore.add({
       id: Date.now(),
       title: content.title,
       description: content.description,
@@ -199,17 +199,17 @@ function openCreateTodoDialog(triggerDate: string) {
   });
 }
 
-function _refreshConstant() {
-  _todayIntlStr = formatDate(new Date());
+function refreshConstant() {
+  todayIntlStr = formatDate(new Date());
 }
 
-function _getFirstDate(target: Date) {
+function getFirstDate(target: Date) {
   return new Date(`${target.getFullYear()}-${target.getMonth() + 1}-1`);
 }
 
-function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
+function dateConstructor(date: Date, isActivateDate: boolean): IDate {
   const dateIntlStr = formatDate(date);
-  const todoList = _todoStore.getListByDate(dateIntlStr);
+  const todoList = TodoStore.getListByDate(dateIntlStr);
   const { uncompletedTodoList, completedTodoList } = todoList.reduce(
     (acc, cur) => {
       if (cur.completed) {
@@ -227,7 +227,7 @@ function _dateConstructor(date: Date, isActivateDate: boolean): IDate {
     dateIntlStr: formatDate(date),
     date: date.getDate(),
     isActivateDate,
-    isToday: _todayIntlStr === dateIntlStr,
+    isToday: todayIntlStr === dateIntlStr,
     todoList,
     uncompletedTodoList,
     completedTodoList

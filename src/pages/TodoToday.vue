@@ -14,7 +14,7 @@ import { todoStore } from 'stores/todo-store';
 import { TodoBus } from 'src/bus/todo-bus';
 import { formatDate } from 'src/utils/formatter';
 
-const _todoStore = todoStore();
+const TodoStore = todoStore();
 const todoList = ref(getTodayTodoList());
 
 const completedTodo = computed(() =>
@@ -32,6 +32,6 @@ function reGetTodoList() {
 
 function getTodayTodoList(): Array<Todo> {
   const today = new Date();
-  return _todoStore.getListByDate(formatDate(today));
+  return TodoStore.getListByDate(formatDate(today));
 }
 </script>

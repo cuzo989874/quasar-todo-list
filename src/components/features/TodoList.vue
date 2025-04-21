@@ -5,7 +5,7 @@
         <q-item-section avatar>
           <q-checkbox
             :model-value="todo.completed"
-            @update:model-value="_onTodoCompletedChange(todo, $event)"
+            @update:model-value="onTodoCompletedChange(todo, $event)"
           />
         </q-item-section>
         <q-item-section>{{ todo.title }}</q-item-section>
@@ -45,12 +45,12 @@ defineProps({
   },
 });
 
-const _todoStore = todoStore();
+const TodoStore = todoStore();
 
-function _onTodoCompletedChange(todo: Todo, completed: boolean) {
+function onTodoCompletedChange(todo: Todo, completed: boolean) {
   todo.completed = completed;
   todo.finishedAt = completed ? formatDatTime(new Date()) : '';
-  _todoStore.saveTodoList();
+  TodoStore.saveTodoList();
 }
 
 function editTodo(todo: Todo) {
@@ -62,13 +62,13 @@ function editTodo(todo: Todo) {
     todo.title = newTodo.title;
     todo.description = newTodo.description;
     todo.activateAt = newTodo.activateAt;
-    _todoStore.saveTodoList();
+    TodoStore.saveTodoList();
     dialog.hide();
   });
 }
 
 function deleteTodo(todo: Todo) {
-  _todoStore.remove(todo);
+  TodoStore.remove(todo);
 }
 </script>
 <style lang="scss">

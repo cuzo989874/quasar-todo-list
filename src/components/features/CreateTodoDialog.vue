@@ -6,7 +6,7 @@
       </q-card-section>
       <q-card-section class="column">
         <q-input
-          v-model="_title"
+          v-model="title"
           label="Title"
           outlined
           autofocus
@@ -14,12 +14,12 @@
         />
         <date-picker-input
           class="q-mb-md"
-          v-model="_activateAt"
+          v-model="activateAt"
           label="Activate Date"
           :rules="[val => !!val || 'Activate Date is required']"
         />
         <q-input
-          v-model="_description"
+          v-model="description"
           label="Description(Optional)"
           outlined
           autofocus
@@ -47,15 +47,15 @@ const emits = defineEmits([
 
 const props = defineProps<{ triggerDate: string }>();
 
-const _title = ref('');
-const _description = ref('');
-const _activateAt = ref(props.triggerDate);
+const title = ref('');
+const description = ref('');
+const activateAt = ref(props.triggerDate);
 
 function save() {
   emits('ok', {
-    title: _title.value,
-    description: _description.value,
-    activateAt: _activateAt.value,
+    title: title.value,
+    description: description.value,
+    activateAt: activateAt.value,
   });
 }
 </script>

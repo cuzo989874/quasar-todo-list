@@ -51,9 +51,9 @@ const _title = ref('');
 const _description = ref('');
 const _activateAt = ref('');
 
-const _titleInputComponent = useTemplateRef<QInput>('title-input');
+const TitleInputComponentRef = useTemplateRef<QInput>('title-input');
 
-const _TodoStore = todoStore();
+const TodoStore = todoStore();
 
 function reset() {
   _title.value = '';
@@ -65,7 +65,7 @@ function submit() {
   if (!_title.value) {
     throw new Error('Title empty');
   }
-  _TodoStore.add({
+  TodoStore.add({
     id: Date.now(),
     title: _title.value.trim(),
     description: _description.value.trim(),
@@ -74,6 +74,6 @@ function submit() {
     completed: false,
   });
   reset();
-  _titleInputComponent.value?.focus();
+  TitleInputComponentRef.value?.focus();
 }
 </script>

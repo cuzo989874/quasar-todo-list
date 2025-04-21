@@ -1,16 +1,16 @@
 <template>
-  <q-popup-proxy ref="TodoPopUpRef" :target="_todoPopUpTarget" transition-show="scale" transition-hide="scale" no-parent-event>
-    <div class="todo-popup" v-if="_activatePopUpTodo">
+  <q-popup-proxy ref="TodoPopUpRef" :target="todoPopUpTarget" transition-show="scale" transition-hide="scale" no-parent-event>
+    <div class="todo-popup" v-if="activatePopUpTodo">
       <div class="todo-popup__header">
-        <h4>{{ _activatePopUpTodo.title }}</h4>
-        <p class="text-grey-4 q-mb-sm">{{ _activatePopUpTodo.activateAt }}</p>
+        <h4>{{ activatePopUpTodo.title }}</h4>
+        <p class="text-grey-4 q-mb-sm">{{ activatePopUpTodo.activateAt }}</p>
       </div>
-      <p class="q-px-sm q-my-sm" v-if="_activatePopUpTodo.description">{{ _activatePopUpTodo.description }}</p>
+      <p class="q-px-sm q-my-sm" v-if="activatePopUpTodo.description">{{ activatePopUpTodo.description }}</p>
       <footer class="todo-popup__footer">
-        <q-btn icon="rotate_left" flat dense round @click="_changeTodoStatus(_activatePopUpTodo, false)"  v-if="_activatePopUpTodo.completed" />
-        <q-btn icon="check" flat dense round @click="_changeTodoStatus(_activatePopUpTodo, true)" v-else />
-        <q-btn icon="edit" flat dense round @click="_openEditTodoDialog(_activatePopUpTodo)" />
-        <q-btn icon="delete" flat dense round @click="deleteTodo(_activatePopUpTodo)" />
+        <q-btn icon="rotate_left" flat dense round @click="changeTodoStatus(activatePopUpTodo, false)"  v-if="activatePopUpTodo.completed" />
+        <q-btn icon="check" flat dense round @click="changeTodoStatus(activatePopUpTodo, true)" v-else />
+        <q-btn icon="edit" flat dense round @click="openEditTodoDialog(activatePopUpTodo)" />
+        <q-btn icon="delete" flat dense round @click="deleteTodo(activatePopUpTodo)" />
       </footer>
     </div>
   </q-popup-proxy>
@@ -24,29 +24,29 @@ import { todoStore } from 'stores/todo-store';
 import EditTodoDialog from 'components/features/EditTodoDialog.vue';
 import { formatDatTime } from 'src/utils/formatter';
 
-const _todoStore = todoStore();
-const _TodoPopUpRef = useTemplateRef<QPopupProxy>('TodoPopUpRef');
-const _todoPopUpTarget = ref<HTMLElement | undefined>(undefined);
-const _activatePopUpTodo = ref<Todo | null>(null);
+const TodoStore = todoStore();
+const TodoPopUpRef = useTemplateRef<QPopupProxy>('TodoPopUpRef');
+const todoPopUpTarget = ref<HTMLElement | undefined>(undefined);
+const activatePopUpTodo = ref<Todo | null>(null);
 
 function open(evt: Event, todo: Todo) {
   console.log(1);
-  _todoPopUpTarget.value = evt.currentTarget as HTMLElement;
-  _activatePopUpTodo.value = todo;
-  _TodoPopUpRef.value?.show(evt);
+  todoPopUpTarget.value = evt.currentTarget as HTMLElement;
+  activatePopUpTodo.value = todo;
+  TodoPopUpRef.value?.show(evt);
 }
 
-function _changeTodoStatus(todo: Todo, completed: boolean) {
+function changeTodoStatus(todo: Todo, completed: boolean) {
   todo.completed = completed;
   todo.finishedAt = completed ? formatDatTime(new Date()) : '';
-  _todoStore.saveTodoList();
+  TodoStore.saveTodoList();
 }
 
 function deleteTodo(todo: Todo) {
-  _todoStore.remove(todo);
+  TodoStore.remove(todo);
 }
 
-function _openEditTodoDialog(todo: Todo) {
+function openEditTodoDialog(todo: Todo) {
   const dialog = Dialog.create({
     component: EditTodoDialog,
     componentProps: todo,
@@ -55,7 +55,7 @@ function _openEditTodoDialog(todo: Todo) {
     todo.title = newContent.title;
     todo.description = newContent.description;
     todo.activateAt = newContent.activateAt;
-    _todoStore.saveTodoList();
+    TodoStore.saveTodoList();
     dialog.hide();
   });
 }
