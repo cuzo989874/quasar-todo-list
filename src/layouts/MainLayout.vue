@@ -2,7 +2,7 @@
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleNavigator" />
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
 
@@ -10,11 +10,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <DrawerLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
+    <main-layout-navigator ref="navigator" />
 
     <q-page-container>
       <router-view />
@@ -23,44 +19,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { type ComponentPublicInstance, useTemplateRef } from 'vue';
 
-import DrawerLink, { type DrawerLinksProps } from 'components/features/DrawerLink.vue';
+import MainLayoutNavigator from 'components/features/MainLayoutNavigator.vue';
 
-const linksList: DrawerLinksProps[] = [
-  {
-    title: 'Today',
-    icon: 'today',
-    link: '/todo/today',
-  },
-  {
-    title: 'Todos',
-    icon: 'list',
-    link: '/todo/todos',
-  },
-  {
-    title: 'All',
-    icon: 'list_alt',
-    link: '/todo/all',
-  },
-  {
-    title: 'Calender',
-    icon: 'calendar_month',
-    link: '/calendar',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/cuzo989874',
-    icon: 'code',
-    link: 'https://github.com/cuzo989874',
-    target: '_blank',
-    external: true,
-  },
-];
+const mainLayoutNavigatorRef =
+  useTemplateRef<ComponentPublicInstance<typeof MainLayoutNavigator>>('navigator');
 
-const leftDrawerOpen = ref(false);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+function toggleNavigator() {
+  mainLayoutNavigatorRef.value?.toggle();
 }
 </script>
