@@ -2,6 +2,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
 import { defineConfig } from '#q-app/wrappers';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig((/* ctx */) => {
   return {
@@ -59,7 +60,12 @@ export default defineConfig((/* ctx */) => {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf) {
+        viteConf.plugins?.push(react());
+      },
+      extendWebpackConf(cfg: { plugins: string[] }) {
+        cfg.plugins.push('/microFrontends/react-pomodoro/webpack.config.js');
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [

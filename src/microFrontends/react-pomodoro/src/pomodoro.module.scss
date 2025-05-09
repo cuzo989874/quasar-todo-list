@@ -1,0 +1,75 @@
+@use 'sass:color';
+
+$gap: 8px;
+
+.reactPomodoro {
+  background: color.adjust(#1976d2, $lightness: 50%);
+  padding: $gap;
+
+  &__menu {
+    display: flex;
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    & > li {
+      width: calc(100% / 3);
+      opacity: 0.6;
+      transition: 0.2s;
+
+      & > a {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 4ex;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      &.pomodoroItem--active {
+        background-color: #1976d2;
+        color: white;
+        opacity: 1;
+      }
+    }
+  }
+  &__timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 2em;
+    font-weight: 600;
+    opacity: 0.8;
+    margin: $gap 0;
+  }
+
+  &__action {
+    width: 1.6em;
+    height: 1.6em;
+    font-size: 18px;
+    background: inherit;
+    outline: none;
+    border: 1px solid #dddd;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    padding: 0;
+    cursor: pointer;
+
+    &-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    &:hover {
+      background-color: color.adjust(#1976d2, $lightness: 40%);
+    }
+    &:not(:last-child) {
+      margin-right: $gap;
+    }
+  }
+}
